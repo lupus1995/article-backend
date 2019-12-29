@@ -1,0 +1,15 @@
+{
+  "type": "mysql",
+  "host": "localhost",
+  "port": 3306,
+  "username": "root",
+  "password": "sancho1995",
+  "database": "articles",
+  "entities": ["./dist/**/*.entity{.ts,.js}"],
+  "migrations": ["./dist/migrations/**/*{.ts,.js}"],
+  "synchronize": false,
+  "autoSchemaSync": false,
+  "cli": {
+    "migrationsDir": "./src/migrations"
+  }
+}

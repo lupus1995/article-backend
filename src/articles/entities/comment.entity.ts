@@ -15,7 +15,6 @@ export class Comments {
     @Column({name: 'created_at'})
     createdAd: string;
 
-    // @OneToOne(type => Article, article => article.id)
-    // @JoinColumn()
-    // article?: Article;
+    @OneToOne(type => Article, article => article.id)
+    article?: Article;
 }

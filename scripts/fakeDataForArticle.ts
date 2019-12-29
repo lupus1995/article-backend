@@ -15,12 +15,6 @@ const admin: User = {
     updatedAt: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
 };
 
-// const comment: Comments = {
-//     articleId: 1,
-//     comment: faker.lorem.words(10),
-//     createdAd: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
-// };
-
 for (let idArticle: number = 0; idArticle < 1000; idArticle++) {
     for (let idComment: number = 0; idComment < 10; idComment++) {
         const comment: Comments = {

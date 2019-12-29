@@ -17,14 +17,24 @@ import {User} from '../src/users/entities/user.entity';
                 database: 'articles',
             },
         );
+
+        const queryRunner = connection.createQueryRunner();
         console.log('connection to database open');
         const articleRepository = getRepository(Article);
         const commentRepository = getRepository(Comments);
         const userRepository = getRepository(User);
-        await userRepository.save(admin);
-        await articleRepository.save(articles);
-        await commentRepository.save(comments);
-        // console.log(comments);
+        await queryRunner.startTransaction();
+        try {
+            await userRepository.save(admin);
+            await articleRepository.save(articles);
+            await commentRepository.save(comments);
+        } catch (e) {
+            await queryRunner.rollbackTransaction();
+            console.log(`Error. ${e.message}`);
+        } finally {
+            await queryRunner.release();
+        }
+
         await connection.close();
         console.log('connection to database close');
     } catch (e) {

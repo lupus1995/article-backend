@@ -10,6 +10,8 @@ export class createTableArticles1577610454768 implements MigrationInterface {
                     type: 'int',
                     name: 'id',
                     isPrimary: true,
+                    isGenerated: true,
+                    generationStrategy: 'increment',
                 },
                 {
                     type: 'varchar',
@@ -20,13 +22,11 @@ export class createTableArticles1577610454768 implements MigrationInterface {
                 {
                     type: 'varchar',
                     name: 'article',
-                    isUnique: true,
                     length: '255',
                 },
                 {
                     type: 'varchar',
                     name: 'description',
-                    isUnique: true,
                     length: '255',
                 },
                 {

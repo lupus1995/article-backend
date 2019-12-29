@@ -15,7 +15,7 @@ export class addFkArticleUser1577644036045 implements MigrationInterface {
         await queryRunner.createForeignKey(article, new TableForeignKey({
             columnNames: ['author_id'],
             referencedColumnNames: ['id'],
-            referencedTableName: 'user',
+            referencedTableName: 'users',
             onDelete: 'CASCADE',
             name: fk,
         }));

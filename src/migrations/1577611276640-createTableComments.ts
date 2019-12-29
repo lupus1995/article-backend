@@ -10,6 +10,8 @@ export class createTableComments1577611276640 implements MigrationInterface {
                     name: 'id',
                     type: 'int',
                     isPrimary: true,
+                    isGenerated: true,
+                    generationStrategy: 'increment',
                 },
                 {
                     name: 'article_id',
@@ -22,10 +24,6 @@ export class createTableComments1577611276640 implements MigrationInterface {
                 {
                     type: 'datetime',
                     name: 'created_at',
-                },
-                {
-                    type: 'datetime',
-                    name: 'updated_at',
                 },
             ],
         }));

@@ -9,7 +9,6 @@ const comments: Comments[] = [];
 for (let idArticle: number = 0; idArticle < 1000; idArticle++) {
     for (let idComment: number = 0; idComment < 10; idComment++) {
         const comment: Comments = {
-            id: idComment,
             articleId: idArticle,
             comment: faker.lorem.words(10),
             createdAd: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
@@ -18,8 +17,8 @@ for (let idArticle: number = 0; idArticle < 1000; idArticle++) {
     }
 
     const article: Article = {
-        id: idArticle,
-        title: faker.name.title(),
+            id: idArticle + 1,
+        title: Math.random().toString(36).substring(2, 15),
         article: faker.lorem.words(10),
         description: faker.lorem.words(10),
         authorId: 1,

@@ -4,7 +4,7 @@ import {Article} from './article.entity';
 @Entity()
 export class Comments {
     @PrimaryGeneratedColumn()
-    id: number;
+    id?: number;
 
     @Column({name: 'article_id'})
     articleId: number;

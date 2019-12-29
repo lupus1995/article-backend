@@ -1,4 +1,4 @@
-import {Article} from '../../src/articles/entities/articles.entity';
+import {Article} from '../../src/articles/entities/article.entity';
 import {EntityRepository, Repository} from 'typeorm';
 
 @EntityRepository(Article)

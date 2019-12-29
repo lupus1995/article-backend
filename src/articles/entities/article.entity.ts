@@ -1,4 +1,5 @@
-import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import {Comments} from './comment.entity';
 
 @Entity('articles')
 export class Article {
@@ -22,4 +23,8 @@ export class Article {
 
     @Column({name: 'updated_at'})
     updatedAt?: string;
+
+    // @OneToMany(type => Comments, comment => comment.articleId)
+    // @JoinColumn()
+    // comments?: Comments[];
 }

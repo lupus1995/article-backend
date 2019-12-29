@@ -4,7 +4,7 @@ import {Comments} from './comment.entity';
 @Entity('articles')
 export class Article {
     @PrimaryGeneratedColumn()
-    id: number;
+    id?: number;
 
     @Column()
     title: string;
@@ -24,7 +24,7 @@ export class Article {
     @Column({name: 'updated_at'})
     updatedAt?: string;
 
-    // @OneToMany(type => Comments, comment => comment.articleId)
-    // @JoinColumn()
-    // comments?: Comments[];
+    @OneToMany(type => Comments, comment => comment.articleId)
+    @JoinColumn()
+    comments?: Comments[];
 }

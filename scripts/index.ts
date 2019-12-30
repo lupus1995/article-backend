@@ -1,8 +1,10 @@
-import articles, {admin, comments} from './fakeDataForArticle';
+import articles, {admin, comments} from './fakeData';
 import {createConnection, getRepository} from 'typeorm';
 import {Article} from '../src/articles/entities/article.entity';
 import {Comments} from '../src/articles/entities/comment.entity';
 import {User} from '../src/users/entities/user.entity';
+import * as bcrypt from 'bcrypt';
+import has = Reflect.has;
 
 (async () => {
     try {
@@ -17,7 +19,7 @@ import {User} from '../src/users/entities/user.entity';
                 database: 'articles',
             },
         );
-
+        admin.password = await bcrypt.hash(admin.password, 10);
         const queryRunner = connection.createQueryRunner();
         console.log('connection to database open');
         const articleRepository = getRepository(Article);

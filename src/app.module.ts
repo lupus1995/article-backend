@@ -7,6 +7,8 @@ import {Connection} from 'typeorm';
 import {ArticlesModule} from './articles/articles.module';
 import {Article} from './articles/entities/article.entity';
 import { UsersController } from './users/users.controller';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 
 @Module({
     imports: [
@@ -22,9 +24,10 @@ import { UsersController } from './users/users.controller';
             //     synchronize: true,
             // },
         ),
+        AuthModule,
         ArticlesModule,
     ],
-    controllers: [AppController, CatsController, UsersController],
+    controllers: [AppController, CatsController],
     providers: [AppService],
 })
 export class AppModule {

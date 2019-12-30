@@ -3,6 +3,7 @@ import * as faker from 'faker';
 import {Comments} from '../src/articles/entities/comment.entity';
 import {User, UserRole} from '../src/users/entities/user.entity';
 import moment = require('moment');
+import * as bcrypt from 'bcrypt';
 
 const articles: Article[] = [];
 const comments: Comments[] = [];
@@ -11,6 +12,8 @@ const admin: User = {
     name: 'Alex',
     surname: 'Panfilov',
     role: UserRole.ADMIN,
+    email: 'canya.panfilov.95@gmail.com',
+    password: 'sancho1995',
     createdAt: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
     updatedAt: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
 };

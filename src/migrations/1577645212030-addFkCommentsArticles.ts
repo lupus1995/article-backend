@@ -9,12 +9,12 @@ export class addFkCommentsArticles1577645212030 implements MigrationInterface {
     public async up(queryRunner: QueryRunner): Promise<any> {
         await queryRunner.createIndex(table, new TableIndex({
             name: index,
-            columnNames: ['article_id'],
+            columnNames: ['articleId'],
         }));
 
         await queryRunner.createForeignKey(table, new TableForeignKey({
             name: fk,
-            columnNames: ['article_id'],
+            columnNames: ['articleId'],
             referencedTableName: 'articles',
             referencedColumnNames: ['id'],
         }));

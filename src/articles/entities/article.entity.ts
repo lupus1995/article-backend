@@ -1,4 +1,4 @@
-import {Column, Entity, JoinColumn, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, JoinColumn, JoinTable, OneToMany, PrimaryGeneratedColumn, RelationCount} from 'typeorm';
 import {Comments} from './comment.entity';
 
 @Entity('articles')
@@ -15,6 +15,9 @@ export class Article {
     @Column()
     description: string;
 
+    @Column()
+    slug: string;
+
     @Column({name: 'author_id'})
     authorId: number;
 
@@ -24,7 +27,10 @@ export class Article {
     @Column({name: 'updated_at'})
     updatedAt?: string;
 
-    @OneToMany(type => Comments, comment => comment.articleId)
-    @JoinColumn()
-    comments?: Comments[];
+    @OneToMany(type => Comments, comments => comments.article, {eager: true})
+    @JoinTable()
+    comments: Comments[];
+
+    commentsCount: number;
+    articleCount: number;
 }

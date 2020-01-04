@@ -1,4 +1,4 @@
-import {Column, Entity, JoinColumn, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {Article} from './article.entity';
 
 @Entity()
@@ -6,7 +6,7 @@ export class Comments {
     @PrimaryGeneratedColumn()
     id?: number;
 
-    @Column({name: 'article_id'})
+    @Column()
     articleId: number;
 
     @Column({length: 255})
@@ -15,6 +15,6 @@ export class Comments {
     @Column({name: 'created_at'})
     createdAd: string;
 
-    @OneToOne(type => Article, article => article.id)
-    article?: Article;
+    @ManyToOne(type => Article, article => article.comments)
+    article: Article;
 }

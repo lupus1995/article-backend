@@ -2,8 +2,9 @@ import * as faker from 'faker';
 import {User, UserRole} from '../src/users/entities/user.entity';
 import moment = require('moment');
 import slugify from 'slugify';
+import {Article} from '../src/articles/dto/article.dto';
 
-const articles = [];
+const articles: Article[] = [];
 const comments = [];
 
 const admin: User = {
@@ -27,7 +28,7 @@ for (let idArticle: number = 0; idArticle < 1000; idArticle++) {
     }
 
     const title = Math.random().toString(36).substring(2, 15);
-    const article = {
+    const article: Article = {
         title,
         article: faker.lorem.words(10),
         description: faker.lorem.words(10),

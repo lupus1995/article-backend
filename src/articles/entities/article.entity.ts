@@ -1,8 +1,8 @@
 import {Column, Entity, JoinColumn, JoinTable, OneToMany, PrimaryGeneratedColumn, RelationCount} from 'typeorm';
-import {Comments} from './comment.entity';
+import {CommentEntity} from './comment.entity';
 
 @Entity('articles')
-export class Article {
+export class ArticleEntity {
     @PrimaryGeneratedColumn()
     id?: number;
 
@@ -27,10 +27,11 @@ export class Article {
     @Column({name: 'updated_at'})
     updatedAt?: string;
 
-    @OneToMany(type => Comments, comments => comments.article, {eager: true})
+    @OneToMany(type => CommentEntity, comments => comments.article)
     @JoinTable()
-    comments: Comments[];
+    comments: CommentEntity[];
 
     commentsCount: number;
     articleCount: number;
+    commentsTest: CommentEntity[];
 }

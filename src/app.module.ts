@@ -5,10 +5,7 @@ import {CatsController} from './cats/cats.controller';
 import {TypeOrmModule} from '@nestjs/typeorm';
 import {Connection} from 'typeorm';
 import {ArticlesModule} from './articles/articles.module';
-import {Article} from './articles/entities/article.entity';
-import { UsersController } from './users/users.controller';
 import { AuthModule } from './auth/auth.module';
-import { UsersModule } from './users/users.module';
 
 @Module({
     imports: [

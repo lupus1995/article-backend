@@ -1,10 +1,13 @@
-import {BadRequestException, Controller, Get, Param, Query, UsePipes} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Query, UsePipes} from '@nestjs/common';
 import {ArticlesServices} from './articles.services';
-import {CommentsPageValidationPipe} from './pipes/CommentsPageValidationPipe';
+import {CommentsValidationPipe} from './pipes/CommentsValidationPipe';
 import {Article} from './dto/article.dto';
 import {CommentEntity} from './entities/comment.entity';
+import {ArticlesValidationPipe} from './pipes/ArticlesValidationPipe';
+import {CommentDto, Comment} from './dto/comment.dto';
+import moment = require('moment');
 
-interface PaginationInterface {
+export interface PaginationInterface {
     limit: number;
     offset: number;
 }
@@ -17,19 +20,21 @@ export class ArticlesController {
     }
 
     @Get()
+    @UsePipes(ArticlesValidationPipe)
     async findAll(@Query() query: PaginationInterface) {
-        const {limit = 5, offset = 0} = query;
+        const {limit, offset} = query;
         const [articles, countArticles] = await Promise.all([
-            this.articlesServices.articleRepository
-                .createQueryBuilder('articles')
-                .take(limit)
-                .skip(offset * limit)
-                .loadRelationCountAndMap('articles.commentsCount', 'articles.comments')
-                .getMany(),
+            this.articlesServices.getArticles({limit, offset}),
             this.articlesServices.articleRepository.createQueryBuilder('alias').getCount(),
         ]);
 
-        return {articles, countArticles, prevPage: +offset, nextPage: +offset + 1, loadMore: countArticles - (offset * limit) > 0};
+        return {
+            articles,
+            countArticles,
+            prevPage: offset === 0 ? offset : offset - 1,
+            nextPage: +offset + 1,
+            loadMore: countArticles - (+offset * limit) > 0,
+        };
     }
 
     @Get(':slug')
@@ -50,7 +55,7 @@ export class ArticlesController {
     }
 
     @Get(':slug/comments/:page')
-    @UsePipes(CommentsPageValidationPipe)
+    @UsePipes(CommentsValidationPipe)
     async getComments(@Param() params: { slug: string, page: number }) {
         const {slug, page} = params;
         const limit = 5;
@@ -65,6 +70,15 @@ export class ArticlesController {
             prevPage: page - 1,
             loadMore: commentsCount - limit * (offset + 1) > 0,
         };
+    }
 
+    @Post(':slug/comments')
+    async saveComment(@Param('slug') slug: string, @Body() data: CommentDto) {
+        const {articleId, comment} = data;
+        try {
+            return await this.articlesServices.saveComment({articleId, comment});
+        } catch (e) {
+            console.log(e);
+        }
     }
 }

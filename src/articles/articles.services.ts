@@ -4,6 +4,8 @@ import {ArticleEntity} from './entities/article.entity';
 import {CommentEntity} from './entities/comment.entity';
 import {Repository} from 'typeorm';
 import {Article} from './dto/article.dto';
+import {Comment} from './dto/comment.dto';
+import moment = require('moment');
 
 @Injectable()
 export class ArticlesServices {
@@ -14,6 +16,16 @@ export class ArticlesServices {
         readonly commentsRepository: Repository<CommentEntity>) {
     }
 
+    getArticles({limit, offset}: { limit: number, offset: number }): Promise<Article[]> {
+        return this.articleRepository
+            .createQueryBuilder('articles')
+            .select(['articles.id', 'articles.slug', 'articles.title', 'articles.description'])
+            .take(limit)
+            .skip(offset === 0 ? offset : (offset - 1) * limit)
+            .loadRelationCountAndMap('articles.commentsCount', 'articles.comments')
+            .getMany();
+    }
+
     async getArticle({slug}: { slug: string }): Promise<Article> {
         const article = await this.articleRepository
             .createQueryBuilder('articles')
@@ -22,7 +34,7 @@ export class ArticlesServices {
             .getOne();
 
         if (!article) {
-            throw new BadRequestException({code: 3});
+            throw new BadRequestException({code: 2});
         }
 
         return article;
@@ -42,6 +54,15 @@ export class ArticlesServices {
             skip: offset * limit,
             where: {articleId: article.id},
         });
+    }
+
+    async saveComment({articleId, comment}: { articleId: number, comment: string }): Promise<CommentEntity> {
+        const newComment: Comment = {
+            articleId,
+            comment,
+            createdAd: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+        };
+        return await this.commentsRepository.save(newComment);
     }
 
 }

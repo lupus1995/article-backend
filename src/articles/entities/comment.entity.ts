@@ -1,5 +1,6 @@
-import {Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
+import {BeforeInsert, Column, Entity, JoinColumn, ManyToOne, OneToOne, PrimaryGeneratedColumn} from 'typeorm';
 import {ArticleEntity} from './article.entity';
+import moment = require('moment');
 
 @Entity('comments')
 export class CommentEntity {

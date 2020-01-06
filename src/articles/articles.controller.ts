@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Param, Post, Query, UsePipes} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Query, UseFilters, UsePipes} from '@nestjs/common';
 import {ArticlesServices} from './articles.services';
 import {CommentsValidationPipe} from './pipes/CommentsValidationPipe';
 import {Article} from './dto/article.dto';
@@ -6,6 +6,7 @@ import {CommentEntity} from './entities/comment.entity';
 import {ArticlesValidationPipe} from './pipes/ArticlesValidationPipe';
 import {CommentDto, Comment} from './dto/comment.dto';
 import moment = require('moment');
+import {HttpExceptionFilter} from './http-exception.filter';
 
 export interface PaginationInterface {
     limit: number;
@@ -73,6 +74,7 @@ export class ArticlesController {
     }
 
     @Post(':slug/comments')
+    @UseFilters(HttpExceptionFilter)
     async saveComment(@Param('slug') slug: string, @Body() data: CommentDto) {
         const {articleId, comment} = data;
         try {

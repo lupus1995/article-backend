@@ -29,6 +29,8 @@
     "@types/bcrypt": "^3.0.0",
     "@types/faker": "^4.1.8",
     "bcrypt": "^3.0.7",
+    "class-transformer": "^0.2.3",
+    "class-validator": "^0.11.0",
     "faker": "^4.1.0",
     "helmet": "^3.21.2",
     "moment": "^2.24.0",

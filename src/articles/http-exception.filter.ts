@@ -1,4 +1,5 @@
 import {ArgumentsHost, Catch, ExceptionFilter, HttpException} from '@nestjs/common';
+import {errorParamsOrExistArticle, errorParamsOrExistArticleMessage} from '../ErrorCodes';
 
 @Catch(HttpException)
 export class HttpExceptionFilter implements ExceptionFilter {
@@ -9,12 +10,20 @@ export class HttpExceptionFilter implements ExceptionFilter {
         const status = exception.getStatus();
 
         const responseError: any = exception.getResponse();
-
-        console.log('response', responseError.message[0].constraints.customText);
+        const text = responseError.message[0].constraints.customText;
+        const code = Number(text);
+        let message: string | undefined;
+        if (responseError.message[0].constraints.customText) {
+            message = responseError.message[0].constraints.customText;
+        } else if (responseError.message[0].constraints.maxLength) {
+            message = responseError.message[0].constraints.maxLength;
+        } else if (responseError.message[0].constraints.mimLength) {
+            message = responseError.message[0].constraints.minLength;
+        }
 
         response
             // @ts-ignore
             .status(status)
-            .json({code: Number(responseError.message[0].constraints.customText)});
+            .json({code, message});
     }
 }

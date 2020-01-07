@@ -1,7 +1,7 @@
 import {ArgumentMetadata, BadRequestException, Inject, Injectable, PipeTransform} from '@nestjs/common';
 import {ArticlesServices} from '../articles.services';
 import {Article} from '../dto/article.dto';
-import {errorParamsOrExistArticle} from '../../ErrorCodes';
+import {errorParamsOrExistArticle, errorParamsOrExistArticleMessage} from '../../ErrorCodes';
 
 @Injectable()
 export class ExistArticlePipe implements PipeTransform {
@@ -15,7 +15,7 @@ export class ExistArticlePipe implements PipeTransform {
         const {slug, page} = value;
         const article: Article = await this.articlesServices.articleRepository.findOne({slug});
         if (!article) {
-            throw new BadRequestException({code: errorParamsOrExistArticle});
+            throw new BadRequestException({code: errorParamsOrExistArticle, message: errorParamsOrExistArticleMessage});
         }
         return page ? {article, page} : article;
     }

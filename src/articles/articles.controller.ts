@@ -7,6 +7,7 @@ import {ArticlesValidationPipe} from './pipes/ArticlesValidationPipe';
 import {CommentDto} from './dto/comment.dto';
 import {HttpExceptionFilter} from './http-exception.filter';
 import {ExistArticlePipe} from './pipes/ExistArticlePipe';
+import {TrimPipe} from './pipes/TrimPipe';
 
 export interface PaginationInterface {
     limit: number;
@@ -76,7 +77,7 @@ export class ArticlesController {
 
     @Post(':slug/comments')
     @UseFilters(HttpExceptionFilter)
-    async saveComment(@Param('slug') slug: string, @Body() data: CommentDto) {
+    async saveComment(@Param('slug') slug: string, @Body(TrimPipe) data: CommentDto) {
         const {articleId, comment} = data;
         return await this.articlesServices.saveComment({articleId, comment});
     }

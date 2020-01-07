@@ -1,4 +1,4 @@
-import {BadRequestException, Injectable} from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {ArticleEntity} from './entities/article.entity';
 import {CommentEntity} from './entities/comment.entity';
@@ -24,20 +24,6 @@ export class ArticlesServices {
             .skip(offset === 0 ? offset : (offset - 1) * limit)
             .loadRelationCountAndMap('articles.commentsCount', 'articles.comments')
             .getMany();
-    }
-
-    async getArticle({slug}: { slug: string }): Promise<Article> {
-        const article = await this.articleRepository
-            .createQueryBuilder('articles')
-            .where('articles.slug = :slug', {slug})
-            .loadRelationCountAndMap('articles.commentsCount', 'articles.comments')
-            .getOne();
-
-        if (!article) {
-            throw new BadRequestException({code: 2});
-        }
-
-        return article;
     }
 
     async getCommentsFromArticle({

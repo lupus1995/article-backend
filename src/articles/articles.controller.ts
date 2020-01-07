@@ -4,9 +4,9 @@ import {CommentsValidationPipe} from './pipes/CommentsValidationPipe';
 import {Article} from './dto/article.dto';
 import {CommentEntity} from './entities/comment.entity';
 import {ArticlesValidationPipe} from './pipes/ArticlesValidationPipe';
-import {CommentDto, Comment} from './dto/comment.dto';
-import moment = require('moment');
+import {CommentDto} from './dto/comment.dto';
 import {HttpExceptionFilter} from './http-exception.filter';
+import {ExistArticlePipe} from './pipes/ExistArticlePipe';
 
 export interface PaginationInterface {
     limit: number;
@@ -39,10 +39,10 @@ export class ArticlesController {
     }
 
     @Get(':slug')
-    async getArticle(@Param('slug') slug: string) {
+    @UsePipes(ExistArticlePipe)
+    async getArticle(@Param() article: Article) {
         const limit = 5;
         const offset = 0;
-        const article: Article = await this.articlesServices.getArticle({slug});
         const comments: CommentEntity[] = await this.articlesServices.getCommentsFromArticle({article, limit, offset});
         const {commentsCount} = article;
         return {
@@ -56,12 +56,11 @@ export class ArticlesController {
     }
 
     @Get(':slug/comments/:page')
-    @UsePipes(CommentsValidationPipe)
-    async getComments(@Param() params: { slug: string, page: number }) {
-        const {slug, page} = params;
+    @UsePipes(CommentsValidationPipe, ExistArticlePipe)
+    async getComments(@Param() params: { article: Article, page: number }) {
+        const {page, article} = params;
         const limit = 5;
         const offset = page - 1;
-        const article = await this.articlesServices.getArticle({slug});
         const comments: CommentEntity[] = await this.articlesServices.getCommentsFromArticle({article, offset, limit});
         const {commentsCount} = article;
         return {

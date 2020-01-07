@@ -3,6 +3,7 @@ import {UsersService} from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import {JwtService} from '@nestjs/jwt';
 import {User} from '../users/entities/user.entity';
+import {errorAuth} from '../ErrorCodes';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +16,7 @@ export class AuthService {
     async validateUser(email: string, pass: string): Promise<User|null> {
         const user = await this.usersService.userRepository.findOne({email});
         if (!user) {
-            throw new HttpException({code: 1}, HttpStatus.BAD_REQUEST);
+            throw new HttpException({code: errorAuth}, HttpStatus.BAD_REQUEST);
         }
         const checkUser = await bcrypt.compare(pass, user.password);
         if (checkUser) {

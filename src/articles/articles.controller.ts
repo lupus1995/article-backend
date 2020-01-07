@@ -13,6 +13,8 @@ export interface PaginationInterface {
     offset: number;
 }
 
+const defaultLimitArticleAndComments = 5;
+
 @Controller('articles')
 export class ArticlesController {
     constructor(
@@ -41,7 +43,7 @@ export class ArticlesController {
     @Get(':slug')
     @UsePipes(ExistArticlePipe)
     async getArticle(@Param() article: Article) {
-        const limit = 5;
+        const limit = defaultLimitArticleAndComments;
         const offset = 0;
         const comments: CommentEntity[] = await this.articlesServices.getCommentsFromArticle({article, limit, offset});
         const {commentsCount} = article;
@@ -59,7 +61,7 @@ export class ArticlesController {
     @UsePipes(CommentsValidationPipe, ExistArticlePipe)
     async getComments(@Param() params: { article: Article, page: number }) {
         const {page, article} = params;
-        const limit = 5;
+        const limit = defaultLimitArticleAndComments;
         const offset = page - 1;
         const comments: CommentEntity[] = await this.articlesServices.getCommentsFromArticle({article, offset, limit});
         const {commentsCount} = article;
@@ -76,10 +78,6 @@ export class ArticlesController {
     @UseFilters(HttpExceptionFilter)
     async saveComment(@Param('slug') slug: string, @Body() data: CommentDto) {
         const {articleId, comment} = data;
-        try {
-            return await this.articlesServices.saveComment({articleId, comment});
-        } catch (e) {
-            console.log(e);
-        }
+        return await this.articlesServices.saveComment({articleId, comment});
     }
 }

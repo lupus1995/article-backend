@@ -1,6 +1,5 @@
 import {ValidationArguments, ValidatorConstraint, ValidatorConstraintInterface} from 'class-validator';
 import {ArticlesServices} from '../articles.services';
-import {EntityManager} from 'typeorm';
 import {app} from '../../main';
 
 @ValidatorConstraint({name: 'customText', async: false})

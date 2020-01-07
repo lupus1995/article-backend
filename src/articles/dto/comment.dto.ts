@@ -1,5 +1,6 @@
 import {IsNotEmpty, IsNumberString, MaxLength, MinLength, Validate} from 'class-validator';
 import {CheckArticlePipe} from '../pipes/CheckArticlePipe';
+import {errorParamsOrExistArticle} from '../../ErrorCodes';
 
 export class CommentDto {
     readonly slug: string;
@@ -8,7 +9,7 @@ export class CommentDto {
     @MaxLength(255)
     readonly comment: string;
     @IsNumberString()
-    @Validate(CheckArticlePipe, {message: '3'})
+    @Validate(CheckArticlePipe, {message: errorParamsOrExistArticle.toString()})
     readonly articleId: number;
 }
 

@@ -1,12 +1,13 @@
 import {IsNotEmpty, IsNumberString, MaxLength, MinLength, Validate} from 'class-validator';
 import {CheckArticlePipe} from '../pipes/CheckArticlePipe';
-import {errorParamsOrExistArticle, errorParamsOrExistArticleMessage} from '../../ErrorCodes';
+import {errorParamsOrExistArticleMessage} from '../../ErrorCodes';
+import {maxLengthMessage, minLengthMessage} from '../constants';
 
 export class CommentDto {
     readonly slug: string;
     @IsNotEmpty()
-    @MinLength(5, {message: 'The comment is short. Minimum 5 characters'})
-    @MaxLength(255, {message: 'The comment is long. The maximum number of characters is 255'})
+    @MinLength(5, {message: minLengthMessage('comments')})
+    @MaxLength(255, {message: maxLengthMessage('comments')})
     readonly comment: string;
     @IsNumberString()
     @Validate(CheckArticlePipe, {message: errorParamsOrExistArticleMessage})

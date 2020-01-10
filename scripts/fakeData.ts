@@ -1,5 +1,5 @@
 import * as faker from 'faker';
-import {User, UserRole} from '../src/users/entities/user.entity';
+import {UserEntity, UserRole} from '../src/users/entities/user.entity';
 import moment = require('moment');
 import slugify from 'slugify';
 import {Article} from '../src/articles/dto/article.dto';
@@ -7,7 +7,7 @@ import {Article} from '../src/articles/dto/article.dto';
 const articles: Article[] = [];
 const comments = [];
 
-const admin: User = {
+const admin: UserEntity = {
     name: 'Alex',
     surname: 'Panfilov',
     role: UserRole.ADMIN,

@@ -2,7 +2,7 @@ import articles, {admin, comments} from './fakeData';
 import {createConnection, getRepository} from 'typeorm';
 import {ArticleEntity} from '../src/articles/entities/article.entity';
 import {CommentEntity} from '../src/articles/entities/comment.entity';
-import {User} from '../src/users/entities/user.entity';
+import {UserEntity} from '../src/users/entities/user.entity';
 import * as bcrypt from 'bcrypt';
 import has = Reflect.has;
 
@@ -13,7 +13,7 @@ import has = Reflect.has;
                 type: 'mysql',
                 host: 'localhost',
                 port: 3306,
-                entities: [ArticleEntity, CommentEntity, User],
+                entities: [ArticleEntity, CommentEntity, UserEntity],
                 username: 'root',
                 password: 'sancho1995',
                 database: 'articles',
@@ -24,7 +24,7 @@ import has = Reflect.has;
         console.log('connection to database open');
         const articleRepository = getRepository(ArticleEntity);
         const commentRepository = getRepository(CommentEntity);
-        const userRepository = getRepository(User);
+        const userRepository = getRepository(UserEntity);
         await queryRunner.startTransaction();
         try {
             await userRepository.save(admin);

@@ -2,6 +2,7 @@ import {ArgumentMetadata, BadRequestException, Inject, Injectable, PipeTransform
 import {ArticlesServices} from '../articles.services';
 import {Article} from '../dto/article.dto';
 import {errorParamsOrExistArticle, errorParamsOrExistArticleMessage} from '../../ErrorCodes';
+import {ArticleEntity} from '../entities/article.entity';
 
 @Injectable()
 export class ExistArticlePipe implements PipeTransform {
@@ -13,7 +14,11 @@ export class ExistArticlePipe implements PipeTransform {
     async transform(value: { slug: string, page: number | undefined },
                     metadata: ArgumentMetadata): Promise<Article | { article: Article, page: number }> {
         const {slug, page} = value;
-        const article: Article = await this.articlesServices.articleRepository.findOne({slug});
+        const article: ArticleEntity = await this.articlesServices.articleRepository
+            .createQueryBuilder('articles')
+            .where('articles.slug = :slug', {slug})
+            .loadRelationCountAndMap('articles.commentsCount', 'articles.comments')
+            .getOne();
         if (!article) {
             throw new BadRequestException({code: errorParamsOrExistArticle, message: errorParamsOrExistArticleMessage});
         }

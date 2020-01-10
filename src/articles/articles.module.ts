@@ -4,10 +4,13 @@ import {ArticleEntity} from './entities/article.entity';
 import {ArticlesServices} from './articles.services';
 import {ArticlesController} from './articles.controller';
 import {CommentEntity} from './entities/comment.entity';
-import {CheckArticlePipe} from './pipes/CheckArticlePipe';
+import {AuthModule} from '../auth/auth.module';
 
 @Module({
-    imports: [TypeOrmModule.forFeature([ArticleEntity, CommentEntity])],
+    imports: [
+        TypeOrmModule.forFeature([ArticleEntity, CommentEntity]),
+        AuthModule,
+    ],
     providers: [ArticlesServices],
     controllers: [ArticlesController],
 })

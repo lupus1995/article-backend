@@ -36,6 +36,9 @@ export class ArticlesServices {
         offset: number,
     }): Promise<CommentEntity[]> {
         return await this.commentsRepository.find({
+            order: {
+                id: 'DESC',
+            },
             take: limit,
             skip: offset * limit,
             where: {articleId: article.id},

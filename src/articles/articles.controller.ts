@@ -1,13 +1,14 @@
-import {Body, Controller, Get, Param, Post, Query, UseFilters, UsePipes} from '@nestjs/common';
+import {Body, Controller, Get, Param, Post, Query, UseFilters, UseGuards, UsePipes} from '@nestjs/common';
 import {ArticlesServices} from './articles.services';
 import {CommentsValidationPipe} from './pipes/CommentsValidationPipe';
-import {Article} from './dto/article.dto';
+import {Article, ArticleDto} from './dto/article.dto';
 import {CommentEntity} from './entities/comment.entity';
 import {ArticlesValidationPipe} from './pipes/ArticlesValidationPipe';
 import {CommentDto} from './dto/comment.dto';
 import {HttpExceptionFilter} from './http-exception.filter';
 import {ExistArticlePipe} from './pipes/ExistArticlePipe';
 import {TrimPipe} from './pipes/TrimPipe';
+import { RefreshGuard } from 'src/auth/guards/refresh.guard';
 
 export interface PaginationInterface {
     limit: number;
@@ -39,6 +40,12 @@ export class ArticlesController {
             nextPage: +offset + 1,
             loadMore: countArticles - (+offset * limit) > 0,
         };
+    }
+
+    @Post()
+    @UseGuards(RefreshGuard)
+    async createArticle( @Body() data: ArticleDto) {
+        console.log(data);
     }
 
     @Get(':slug')

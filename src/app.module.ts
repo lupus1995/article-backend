@@ -9,20 +9,9 @@ import { AuthModule } from './auth/auth.module';
 
 @Module({
     imports: [
-        TypeOrmModule.forRoot(
-            // {
-            //     type: 'mysql',
-            //     host: 'localhost',
-            //     port: 3306,
-            //     username: 'root',
-            //     password: 'sancho1995',
-            //     database: 'articles',
-            //     entities: [Article],
-            //     synchronize: true,
-            // },
-        ),
-        AuthModule,
+        TypeOrmModule.forRoot(),
         ArticlesModule,
+        AuthModule,
     ],
     controllers: [AppController, CatsController],
     providers: [AppService],

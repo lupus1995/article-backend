@@ -2,18 +2,18 @@ import {HttpException, HttpStatus, Injectable} from '@nestjs/common';
 import {UsersService} from '../users/users.service';
 import * as bcrypt from 'bcrypt';
 import {JwtService} from '@nestjs/jwt';
-import {User} from '../users/entities/user.entity';
+import {UserEntity} from '../users/entities/user.entity';
 import {errorAuth, errorAuthMessage} from '../ErrorCodes';
 
 @Injectable()
 export class AuthService {
     constructor(
         private readonly usersService: UsersService,
-        private readonly jwtService: JwtService,
+        public readonly jwtService: JwtService,
     ) {
     }
 
-    async validateUser(email: string, pass: string): Promise<User|null> {
+    async validateUser(email: string, pass: string): Promise<UserEntity|null> {
         const user = await this.usersService.userRepository.findOne({email});
         if (!user) {
             throw new HttpException({code: errorAuth, message: errorAuthMessage}, HttpStatus.BAD_REQUEST);
@@ -25,7 +25,7 @@ export class AuthService {
         return null;
     }
 
-    async login(user: User) {
+    async login(user: UserEntity) {
         const payload = { email: user.email, sub: user.id };
         return {
             access_token: this.jwtService.sign(payload),

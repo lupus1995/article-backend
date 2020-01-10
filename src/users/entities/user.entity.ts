@@ -1,4 +1,3 @@
-import {Injectable} from '@nestjs/common';
 import {Column, Entity, PrimaryGeneratedColumn} from 'typeorm';
 
 export enum UserRole {
@@ -7,7 +6,7 @@ export enum UserRole {
 }
 
 @Entity({name: 'users'})
-export class User {
+export class UserEntity {
     @PrimaryGeneratedColumn()
     id?: number;
 

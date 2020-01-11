@@ -16,12 +16,6 @@ export class DescriptionPipe implements PipeTransform {
             description = article.substring(0, 60);
         }
 
-        const author = await this.authService.usersService.userRepository.findOne({id: value.authorId});
-
-        if (!author) {
-            throw new HttpException('User not found', HttpStatus.BAD_REQUEST);
-        }
-
         return {...value, description};
     }
 }

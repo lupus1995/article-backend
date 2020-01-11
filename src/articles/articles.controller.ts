@@ -3,13 +3,15 @@ import {ArticlesServices} from './articles.services';
 import {CommentsValidationPipe} from './pipes/comments-validation.pipe';
 import {Article, ArticleDto} from './dto/article.dto';
 import {CommentEntity} from './entities/comment.entity';
-import {ArticlesValidationPipe} from './pipes/articles-validation.pipe';
+import {ArticlesParamsValidationPipe} from './pipes/articles-params-validation.pipe';
 import {CommentDto} from './dto/comment.dto';
-import {HttpExceptionFilter} from './http-exception.filter';
+import {HttpExceptionFilter} from './filters/http-exception.filter';
 import {ExistArticlePipe} from './pipes/exist-article.pipe';
 import {TrimCommentPipe} from './pipes/trim-comment.pipe';
 import {RefreshGuard} from 'src/auth/guards/refresh.guard';
 import {DescriptionPipe} from './pipes/description.pipe';
+import {validate} from 'class-validator';
+import {ArticleValidationPipe} from './pipes/article-validation.pipe';
 
 export interface PaginationInterface {
     limit: number;
@@ -22,11 +24,12 @@ const defaultLimitArticleAndComments = 5;
 export class ArticlesController {
     constructor(
         private readonly articlesServices: ArticlesServices,
+        private readonly articleDto: ArticleDto,
     ) {
     }
 
     @Get()
-    @UsePipes(ArticlesValidationPipe)
+    @UsePipes(ArticlesParamsValidationPipe)
     async findAll(@Query() query: PaginationInterface) {
         const {limit, offset} = query;
         const [articles, countArticles] = await Promise.all([
@@ -45,7 +48,7 @@ export class ArticlesController {
 
     @Post()
     @UseGuards(RefreshGuard)
-    async createArticle(@Body(DescriptionPipe) article: ArticleDto) {
+    async createArticle(@Body(DescriptionPipe, ArticleValidationPipe) article: Article) {
         try {
             await this.articlesServices.saveArticle(article);
             return {

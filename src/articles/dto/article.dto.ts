@@ -1,11 +1,14 @@
 import {CommentEntity} from '../entities/comment.entity';
-import {IsNotEmpty, IsNumber, IsOptional, MaxLength, MinLength, ValidateIf} from 'class-validator';
+import {IsNotEmpty, IsNumber, IsOptional, MaxLength, MinLength, Validate} from 'class-validator';
 import {maxLengthMessage, minLengthMessage} from '../constants';
+import {CheckAuthorValidator} from '../validators/check-author.validator';
+import {ArticleTitleUniq} from '../validators/article-title-uniq.validator';
 
 export class ArticleDto {
     @IsNotEmpty()
     @MinLength(5, {message: minLengthMessage('title')})
     @MaxLength(255, {message: maxLengthMessage('title')})
+    @Validate(ArticleTitleUniq, {message: 'The title is not unique'})
     title: string;
     @IsNotEmpty()
     @MinLength(5, {message: minLengthMessage('article')})
@@ -17,6 +20,7 @@ export class ArticleDto {
     description: string;
     @IsNotEmpty()
     @IsNumber()
+    @Validate(CheckAuthorValidator, {message: 'User not found'})
     authorId: number;
 }
 

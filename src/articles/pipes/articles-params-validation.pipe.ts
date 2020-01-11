@@ -3,7 +3,7 @@ import {PaginationInterface} from '../articles.controller';
 import {errorParamsOrExistArticle} from '../../ErrorCodes';
 
 @Injectable()
-export class ArticlesValidationPipe implements PipeTransform<any> {
+export class ArticlesParamsValidationPipe implements PipeTransform<any> {
     transform(value: PaginationInterface, metadata: ArgumentMetadata): PaginationInterface {
         const {offset = 0, limit = 5} = value;
         if (offset < 0 || limit <= 0) {

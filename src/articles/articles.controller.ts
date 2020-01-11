@@ -10,8 +10,8 @@ import {ExistArticlePipe} from './pipes/exist-article.pipe';
 import {TrimCommentPipe} from './pipes/trim-comment.pipe';
 import {RefreshGuard} from 'src/auth/guards/refresh.guard';
 import {DescriptionPipe} from './pipes/description.pipe';
-import {validate} from 'class-validator';
 import {ArticleValidationPipe} from './pipes/article-validation.pipe';
+import {AuthService} from '../auth/auth.service';
 
 export interface PaginationInterface {
     limit: number;
@@ -24,7 +24,7 @@ const defaultLimitArticleAndComments = 5;
 export class ArticlesController {
     constructor(
         private readonly articlesServices: ArticlesServices,
-        private readonly articleDto: ArticleDto,
+        private readonly authService: AuthService,
     ) {
     }
 
@@ -51,6 +51,8 @@ export class ArticlesController {
     async createArticle(@Body(DescriptionPipe, ArticleValidationPipe) article: Article) {
         try {
             await this.articlesServices.saveArticle(article);
+            const user = await this.authService.usersService.userRepository.findOne({id: article.authorId});
+            await this.authService.jwtService.sign(user);
             return {
                 statusCode: HttpStatus.CREATED,
             };

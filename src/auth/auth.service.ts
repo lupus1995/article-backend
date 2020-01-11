@@ -13,10 +13,14 @@ export class AuthService {
     ) {
     }
 
-    async validateUser(email: string, pass: string): Promise<UserEntity|null> {
-        const user = await this.usersService.userRepository.findOne({email});
+    async getUserByEmail(email: string) {
+        return await this.usersService.userRepository.findOne({email});
+    }
+
+    async validateUser(email: string, pass: string): Promise<UserEntity | null> {
+        const user = await this.getUserByEmail(email);
         if (!user) {
-            throw new HttpException({code: errorAuth, message: errorAuthMessage}, HttpStatus.BAD_REQUEST);
+            throw new HttpException({statusCode: HttpStatus.BAD_REQUEST, message: errorAuthMessage}, HttpStatus.BAD_REQUEST);
         }
         const checkUser = await bcrypt.compare(pass, user.password);
         if (checkUser) {
@@ -26,7 +30,7 @@ export class AuthService {
     }
 
     async login(user: UserEntity) {
-        const payload = { email: user.email, sub: user.id };
+        const payload = {email: user.email, sub: user.id};
         return {
             access_token: this.jwtService.sign(payload),
         };

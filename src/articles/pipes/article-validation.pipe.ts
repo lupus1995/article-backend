@@ -13,6 +13,7 @@ export class ArticleValidationPipe implements PipeTransform {
         const errors: ValidationError[] = await validate(articleDto);
         if (errors.length > 0) {
             throw new HttpException({
+                statusCode: HttpStatus.BAD_REQUEST,
                 errors: errors.map((error: ValidationError) => {
                     return {
                         field: error.property,

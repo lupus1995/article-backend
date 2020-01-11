@@ -1,5 +1,5 @@
 import {CommentEntity} from '../entities/comment.entity';
-import {IsNotEmpty, IsNumber, IsOptional, MaxLength, MinLength, Validate} from 'class-validator';
+import {IsNotEmpty, IsNumber, IsNumberString, IsOptional, MaxLength, MinLength, Validate} from 'class-validator';
 import {maxLengthMessage, minLengthMessage} from '../constants';
 import {CheckAuthorValidator} from '../validators/check-author.validator';
 import {ArticleTitleUniq} from '../validators/article-title-uniq.validator';

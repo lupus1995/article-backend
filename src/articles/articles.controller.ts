@@ -1,13 +1,13 @@
 import {Body, Controller, Get, HttpStatus, Param, Post, Query, UseFilters, UseGuards, UsePipes, Headers} from '@nestjs/common';
 import {ArticlesServices} from './articles.services';
-import {CommentsValidationPipe} from './pipes/CommentsValidationPipe';
+import {CommentsValidationPipe} from './pipes/comments-validation.pipe';
 import {Article, ArticleDto} from './dto/article.dto';
 import {CommentEntity} from './entities/comment.entity';
-import {ArticlesValidationPipe} from './pipes/ArticlesValidationPipe';
+import {ArticlesValidationPipe} from './pipes/articles-validation.pipe';
 import {CommentDto} from './dto/comment.dto';
 import {HttpExceptionFilter} from './http-exception.filter';
-import {ExistArticlePipe} from './pipes/ExistArticlePipe';
-import {TrimCommentPipe} from './pipes/TrimCommentPipe';
+import {ExistArticlePipe} from './pipes/exist-article.pipe';
+import {TrimCommentPipe} from './pipes/trim-comment.pipe';
 import {RefreshGuard} from 'src/auth/guards/refresh.guard';
 import {DescriptionPipe} from './pipes/description.pipe';
 

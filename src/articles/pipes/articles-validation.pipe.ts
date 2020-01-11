@@ -1,6 +1,6 @@
 import {ArgumentMetadata, HttpException, HttpStatus, Injectable, PipeTransform} from '@nestjs/common';
 import {PaginationInterface} from '../articles.controller';
-import {errorParamsOrExistArticle, errorParamsOrExistArticleMessage} from '../../ErrorCodes';
+import {errorParamsOrExistArticle} from '../../ErrorCodes';
 
 @Injectable()
 export class ArticlesValidationPipe implements PipeTransform<any> {

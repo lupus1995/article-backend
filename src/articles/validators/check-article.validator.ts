@@ -3,7 +3,7 @@ import {ArticlesServices} from '../articles.services';
 import {app} from '../../main';
 
 @ValidatorConstraint({name: 'customText', async: false})
-export class CheckArticlePipe implements ValidatorConstraintInterface {
+export class CheckArticleValidator implements ValidatorConstraintInterface {
 
     private readonly articleService: ArticlesServices;
 

@@ -8,7 +8,7 @@ import {errorAuth, errorAuthMessage} from '../ErrorCodes';
 @Injectable()
 export class AuthService {
     constructor(
-        private readonly usersService: UsersService,
+        public readonly usersService: UsersService,
         public readonly jwtService: JwtService,
     ) {
     }

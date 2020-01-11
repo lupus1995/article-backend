@@ -3,9 +3,10 @@ import {InjectRepository} from '@nestjs/typeorm';
 import {ArticleEntity} from './entities/article.entity';
 import {CommentEntity} from './entities/comment.entity';
 import {Repository} from 'typeorm';
-import {Article} from './dto/article.dto';
+import {Article, ArticleDto} from './dto/article.dto';
 import {Comment} from './dto/comment.dto';
 import moment = require('moment');
+import slugify from 'slugify';
 
 @Injectable()
 export class ArticlesServices {
@@ -21,6 +22,7 @@ export class ArticlesServices {
             .createQueryBuilder('articles')
             .select(['articles.id', 'articles.slug', 'articles.title', 'articles.description'])
             .take(limit)
+            .orderBy({id: 'DESC'})
             .skip(offset === 0 ? offset : (offset - 1) * limit)
             .loadRelationCountAndMap('articles.commentsCount', 'articles.comments')
             .getMany();
@@ -52,6 +54,16 @@ export class ArticlesServices {
             createdAd: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
         };
         return await this.commentsRepository.save(newComment);
+    }
+
+    async saveArticle(data: ArticleDto): Promise<Article | undefined> {
+        const time = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+        const {title, article, description, authorId} = data;
+        const slug: string = slugify(title);
+        const createdAd = time;
+        const updatedAt = time;
+        const newArticle: Article = {title, article, description, authorId, slug, createdAd, updatedAt};
+        return await this.articleRepository.save(newArticle);
     }
 
 }

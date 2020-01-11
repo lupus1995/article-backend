@@ -1,4 +1,4 @@
-import {Body, Controller, Get, Param, Post, Query, UseFilters, UseGuards, UsePipes} from '@nestjs/common';
+import {Body, Controller, Get, HttpStatus, Param, Post, Query, UseFilters, UseGuards, UsePipes, Headers} from '@nestjs/common';
 import {ArticlesServices} from './articles.services';
 import {CommentsValidationPipe} from './pipes/CommentsValidationPipe';
 import {Article, ArticleDto} from './dto/article.dto';
@@ -7,8 +7,9 @@ import {ArticlesValidationPipe} from './pipes/ArticlesValidationPipe';
 import {CommentDto} from './dto/comment.dto';
 import {HttpExceptionFilter} from './http-exception.filter';
 import {ExistArticlePipe} from './pipes/ExistArticlePipe';
-import {TrimPipe} from './pipes/TrimPipe';
-import { RefreshGuard } from 'src/auth/guards/refresh.guard';
+import {TrimCommentPipe} from './pipes/TrimCommentPipe';
+import {RefreshGuard} from 'src/auth/guards/refresh.guard';
+import {DescriptionPipe} from './pipes/description.pipe';
 
 export interface PaginationInterface {
     limit: number;
@@ -44,8 +45,18 @@ export class ArticlesController {
 
     @Post()
     @UseGuards(RefreshGuard)
-    async createArticle( @Body() data: ArticleDto) {
-        console.log(data);
+    async createArticle(@Body(DescriptionPipe) article: ArticleDto) {
+        try {
+            await this.articlesServices.saveArticle(article);
+            return {
+                statusCode: HttpStatus.CREATED,
+            };
+        } catch (e) {
+            return {
+                statusCode: HttpStatus.BAD_REQUEST,
+                message: e.message,
+            };
+        }
     }
 
     @Get(':slug')
@@ -84,7 +95,7 @@ export class ArticlesController {
 
     @Post(':slug/comments')
     @UseFilters(HttpExceptionFilter)
-    async saveComment(@Param('slug') slug: string, @Body(TrimPipe) data: CommentDto) {
+    async saveComment(@Param('slug') slug: string, @Body(TrimCommentPipe) data: CommentDto) {
         const {articleId, comment} = data;
         return await this.articlesServices.saveComment({articleId, comment});
     }

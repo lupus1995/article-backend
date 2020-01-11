@@ -1,5 +1,5 @@
 import {CommentEntity} from '../entities/comment.entity';
-import {IsNotEmpty, IsOptional, MaxLength, MinLength, ValidateIf} from 'class-validator';
+import {IsNotEmpty, IsNumber, IsOptional, MaxLength, MinLength, ValidateIf} from 'class-validator';
 import {maxLengthMessage, minLengthMessage} from '../constants';
 
 export class ArticleDto {
@@ -15,6 +15,9 @@ export class ArticleDto {
     @MinLength(5, {message: minLengthMessage('description')})
     @MaxLength(255, {message: maxLengthMessage('description')})
     description: string;
+    @IsNotEmpty()
+    @IsNumber()
+    authorId: number;
 }
 
 export interface Article {

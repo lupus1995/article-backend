@@ -1,4 +1,4 @@
-import {Body, Controller, Get, HttpStatus, Param, Post, Query, UseFilters, UseGuards, UsePipes, Headers} from '@nestjs/common';
+import {Body, Controller, Get, HttpStatus, Param, Post, Query, UseFilters, UseGuards, UsePipes, Headers, Put, Delete} from '@nestjs/common';
 import {ArticlesServices} from './articles.services';
 import {CommentsValidationPipe} from './pipes/comments-validation.pipe';
 import {Article, ArticleDto} from './dto/article.dto';
@@ -12,6 +12,7 @@ import {RefreshGuard} from 'src/auth/guards/refresh.guard';
 import {DescriptionPipe} from './pipes/description.pipe';
 import {ArticleValidationPipe} from './pipes/article-validation.pipe';
 import {AuthService} from '../auth/auth.service';
+import {CheckCommentPipe} from './pipes/check-comment.pipe';
 
 export interface PaginationInterface {
     limit: number;
@@ -81,6 +82,13 @@ export class ArticlesController {
         };
     }
 
+    @Put(':slug')
+    @UseGuards(RefreshGuard)
+    async updateArticle(@Body(DescriptionPipe, ArticleValidationPipe) article: Article) {
+
+        return await this.articlesServices.updateArticle(article);
+    }
+
     @Get(':slug/comments/:page')
     @UsePipes(CommentsValidationPipe, ExistArticlePipe)
     async getComments(@Param() params: { article: Article, page: number }) {
@@ -95,6 +103,16 @@ export class ArticlesController {
             nextPage: page + 1,
             prevPage: page - 1,
             loadMore: commentsCount - limit * (offset + 1) > 0,
+        };
+    }
+
+    @Delete(':slug/comments/:id')
+    @UseGuards(RefreshGuard)
+    @UsePipes(CheckCommentPipe)
+    async deleteComment(@Param() comment: CommentEntity) {
+        await this.articlesServices.commentsRepository.delete(comment.id);
+        return {
+            statusCode: HttpStatus.OK,
         };
     }
 

@@ -2,7 +2,7 @@ import {Injectable} from '@nestjs/common';
 import {InjectRepository} from '@nestjs/typeorm';
 import {ArticleEntity} from './entities/article.entity';
 import {CommentEntity} from './entities/comment.entity';
-import {Repository} from 'typeorm';
+import {Repository, UpdateResult} from 'typeorm';
 import {Article, ArticleDto} from './dto/article.dto';
 import {Comment} from './dto/comment.dto';
 import moment = require('moment');
@@ -64,6 +64,19 @@ export class ArticlesServices {
         const updatedAt = time;
         const newArticle: Article = {title, article, description, authorId, slug, createdAd, updatedAt};
         return await this.articleRepository.save(newArticle);
+    }
+
+    async updateArticle(data: ArticleDto): Promise<UpdateResult> {
+        const time = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
+        const {title, article: dataArticle, description, authorId, id} = data;
+        const article = await this.articleRepository.findOne(id);
+        article.slug = slugify(title);
+        article.updatedAt = time;
+        article.title = title;
+        article.article = dataArticle;
+        article.description = description;
+        article.authorId = authorId;
+        return await this.articleRepository.update(id, article);
     }
 
 }

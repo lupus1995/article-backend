@@ -5,6 +5,11 @@ import {CheckAuthorValidator} from '../validators/check-author.validator';
 import {ArticleTitleUniq} from '../validators/article-title-uniq.validator';
 
 export class ArticleDto {
+    id?: number;
+    @IsNotEmpty()
+    @IsNumber()
+    @Validate(CheckAuthorValidator, {message: 'User not found'})
+    authorId: number;
     @IsNotEmpty()
     @MinLength(5, {message: minLengthMessage('title')})
     @MaxLength(255, {message: maxLengthMessage('title')})
@@ -18,10 +23,6 @@ export class ArticleDto {
     @MinLength(5, {message: minLengthMessage('description')})
     @MaxLength(255, {message: maxLengthMessage('description')})
     description: string;
-    @IsNotEmpty()
-    @IsNumber()
-    @Validate(CheckAuthorValidator, {message: 'User not found'})
-    authorId: number;
 }
 
 export interface Article {

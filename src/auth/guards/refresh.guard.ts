@@ -20,7 +20,6 @@ export class RefreshGuard implements CanActivate {
 
     async validateToken(auth: string) {
         const [bearer, token] = auth.split(' ');
-
         if (bearer !== 'Bearer') {
             throw new HttpException('Invalid token', HttpStatus.FORBIDDEN);
         }

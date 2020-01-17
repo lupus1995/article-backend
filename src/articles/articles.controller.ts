@@ -71,7 +71,12 @@ export class ArticlesController {
     async getArticle(@Param() article: Article) {
         const limit = defaultLimitArticleAndComments;
         const offset = 0;
-        const comments: CommentEntity[] = await this.articlesServices.getCommentsFromArticle({article, limit, offset});
+        const comments: CommentEntity[] = await this.articlesServices.getCommentsFromArticle({
+            article,
+            limit,
+            offset,
+            useOffsetAndLimitInSkip: true,
+        });
         const {commentsCount} = article;
         return {
             article, comments: {
@@ -99,19 +104,28 @@ export class ArticlesController {
     }
 
     @Get(':slug/comments/:page')
-    @UsePipes(CommentsValidationPipe, ExistArticlePipe)
-    async getComments(@Param() params: { article: Article, page: number }) {
+    async getComments(@Param(CommentsValidationPipe, ExistArticlePipe) params: { article: Article, page: number },
+                      @Query('offset') offset: number | undefined,
+    ) {
         const {page, article} = params;
         const limit = defaultLimitArticleAndComments;
-        const offset = page - 1;
-        const comments: CommentEntity[] = await this.articlesServices.getCommentsFromArticle({article, offset, limit});
+        const useOffsetAndLimitInSkip = Boolean(!offset);
+        if (!offset) {
+            offset = page - 1;
+        }
+        const comments: CommentEntity[] = await this.articlesServices.getCommentsFromArticle({
+            article,
+            offset,
+            limit,
+            useOffsetAndLimitInSkip,
+        });
         const {commentsCount} = article;
         return {
             comments,
             countComments: commentsCount,
             nextPage: page + 1,
-            prevPage: page - 1,
-            loadMore: commentsCount - limit * (offset + 1) > 0,
+            prevPage: useOffsetAndLimitInSkip ? page - 1 : undefined,
+            loadMore: useOffsetAndLimitInSkip ? commentsCount - limit * (offset + 1) > 0 : commentsCount - limit - offset > 0,
         };
     }
 

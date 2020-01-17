@@ -31,18 +31,20 @@ export class ArticlesServices {
     async getCommentsFromArticle({
                                      article,
                                      limit = 5,
-                                     offset = 0,
+                                     offset,
+                                     useOffsetAndLimitInSkip,
                                  }: {
         article: Article,
         limit: number,
         offset: number,
+        useOffsetAndLimitInSkip: boolean,
     }): Promise<CommentEntity[]> {
         return await this.commentsRepository.find({
             order: {
                 id: 'DESC',
             },
             take: limit,
-            skip: offset * limit,
+            skip: useOffsetAndLimitInSkip ? offset * limit : offset,
             where: {articleId: article.id},
         });
     }

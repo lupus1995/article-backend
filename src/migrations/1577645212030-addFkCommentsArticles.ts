@@ -17,6 +17,7 @@ export class addFkCommentsArticles1577645212030 implements MigrationInterface {
             columnNames: ['articleId'],
             referencedTableName: 'articles',
             referencedColumnNames: ['id'],
+            onDelete: 'cascade',
         }));
     }
 

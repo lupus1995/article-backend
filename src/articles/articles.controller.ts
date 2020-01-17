@@ -13,6 +13,7 @@ import {DescriptionPipe} from './pipes/description.pipe';
 import {ArticleValidationPipe} from './pipes/article-validation.pipe';
 import {AuthService} from '../auth/auth.service';
 import {CheckCommentPipe} from './pipes/check-comment.pipe';
+import {ArticleEntity} from './entities/article.entity';
 
 export interface PaginationInterface {
     limit: number;
@@ -85,8 +86,16 @@ export class ArticlesController {
     @Put(':slug')
     @UseGuards(RefreshGuard)
     async updateArticle(@Body(DescriptionPipe, ArticleValidationPipe) article: Article) {
-
         return await this.articlesServices.updateArticle(article);
+    }
+
+    @Delete(':slug')
+    @UseGuards(RefreshGuard)
+    async deleteArticle(@Param(ExistArticlePipe) article: ArticleEntity) {
+        await this.articlesServices.articleRepository.remove(article);
+        return {
+            statusCode: HttpStatus.OK,
+        };
     }
 
     @Get(':slug/comments/:page')

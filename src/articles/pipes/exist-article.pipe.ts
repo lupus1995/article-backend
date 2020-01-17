@@ -1,4 +1,4 @@
-import {ArgumentMetadata, BadRequestException, Inject, Injectable, PipeTransform} from '@nestjs/common';
+import {ArgumentMetadata, BadRequestException, HttpStatus, Inject, Injectable, NotFoundException, PipeTransform} from '@nestjs/common';
 import {ArticlesServices} from '../articles.services';
 import {Article} from '../dto/article.dto';
 import {errorParamsOrExistArticle, errorParamsOrExistArticleMessage} from '../../ErrorCodes';
@@ -20,7 +20,7 @@ export class ExistArticlePipe implements PipeTransform {
             .loadRelationCountAndMap('articles.commentsCount', 'articles.comments')
             .getOne();
         if (!article) {
-            throw new BadRequestException({code: errorParamsOrExistArticle, message: errorParamsOrExistArticleMessage});
+            throw new NotFoundException({statusCode: HttpStatus.NOT_FOUND, message: errorParamsOrExistArticleMessage});
         }
         return page ? {article, page} : article;
     }

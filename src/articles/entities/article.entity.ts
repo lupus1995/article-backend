@@ -1,4 +1,4 @@
-import {Column, Entity, JoinColumn, JoinTable, OneToMany, PrimaryGeneratedColumn, RelationCount} from 'typeorm';
+import {Column, Entity, JoinTable, OneToMany, PrimaryGeneratedColumn} from 'typeorm';
 import {CommentEntity} from './comment.entity';
 
 @Entity('articles')

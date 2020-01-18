@@ -1,7 +1,7 @@
 ## Description
-This is a project in which I got acquainted with the main features of the framework. There may be mistakes in it, because I did not have a goal to bring it to the ideal.
+This is a project in which I got acquainted with the main features of the framework nestjs. There may be mistakes in it, because I did not have a goal to bring it to the ideal.
 
-The project is an api for this repository. After downloading this repository and installing packages, you need to connect the database, start migrations and generate test data. When you do this api work, you can check the following url: http://localhost:3000/articles
+The project is an api for this repository https://github.com/lupus1995/article-react. After downloading this repository and installing packages, you need to connect the database, start migrations and generate test data. When you do this api work, you can check the following url: http://localhost:3000/articles
 
 ## Installation and run application
 

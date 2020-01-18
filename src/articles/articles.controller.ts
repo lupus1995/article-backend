@@ -1,10 +1,9 @@
 import {Body, Controller, Get, HttpStatus, Param, Post, Query, UseFilters, UseGuards, UsePipes, Headers, Put, Delete} from '@nestjs/common';
 import {ArticlesServices} from './articles.services';
 import {CommentsValidationPipe} from './pipes/comments-validation.pipe';
-import {Article, ArticleDto} from './dto/article.dto';
 import {CommentEntity} from './entities/comment.entity';
 import {ArticlesParamsValidationPipe} from './pipes/articles-params-validation.pipe';
-import {CommentDto} from './dto/comment.dto';
+import {Comment} from './dto/comment.dto';
 import {HttpExceptionFilter} from './filters/http-exception.filter';
 import {ExistArticlePipe} from './pipes/exist-article.pipe';
 import {TrimCommentPipe} from './pipes/trim-comment.pipe';
@@ -14,11 +13,21 @@ import {ArticleValidationPipe} from './pipes/article-validation.pipe';
 import {AuthService} from '../auth/auth.service';
 import {CheckCommentPipe} from './pipes/check-comment.pipe';
 import {ArticleEntity} from './entities/article.entity';
-
-export interface PaginationInterface {
-    limit: number;
-    offset: number;
-}
+import {PaginationArticle} from './documentation/pagination-article.doc';
+import {
+    ApiBadRequestResponse,
+    ApiBearerAuth,
+    ApiBody,
+    ApiCreatedResponse,
+    ApiHeader,
+    ApiNotFoundResponse,
+    ApiOkResponse, ApiQuery,
+    ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
+import {AuthGuard} from '@nestjs/passport';
+import {errorParamsOrExistArticleMessage} from '../ErrorCodes';
+import {ArticleDoc} from './documentation/article.doc';
+import {Article} from './dto/article.dto';
 
 const defaultLimitArticleAndComments = 5;
 
@@ -31,8 +40,19 @@ export class ArticlesController {
     }
 
     @Get()
+    @ApiBadRequestResponse({
+        description: 'Incorrect params offset or limit. Offset and limit must be more 0.',
+        links: {
+            'http://localhost:3000/articles?limit=sdfsdf': {
+                description: 'example error request',
+            },
+        },
+    })
+    @ApiOkResponse({
+        description: 'Get articles',
+    })
     @UsePipes(ArticlesParamsValidationPipe)
-    async findAll(@Query() query: PaginationInterface) {
+    async findAll(@Query() query: PaginationArticle) {
         const {limit, offset} = query;
         const [articles, countArticles] = await Promise.all([
             this.articlesServices.getArticles({limit, offset}),
@@ -49,7 +69,15 @@ export class ArticlesController {
     }
 
     @Post()
-    @UseGuards(RefreshGuard)
+    @ApiBearerAuth('auth')
+    @ApiHeader({name: 'Authorization', description: 'Auth token', allowEmptyValue: true, required: true})
+    @ApiBody({type: ArticleDoc, description: 'Create article'})
+    @ApiUnauthorizedResponse({description: 'Unauthorized'})
+    @ApiBadRequestResponse({
+        description: 'Errors in structure article or in during save article',
+    })
+    @ApiCreatedResponse({description: 'Created new article'})
+    @UseGuards(AuthGuard('jwt'))
     async createArticle(@Body(DescriptionPipe, ArticleValidationPipe) article: Article) {
         try {
             await this.articlesServices.saveArticle(article);
@@ -67,6 +95,12 @@ export class ArticlesController {
     }
 
     @Get(':slug')
+    @ApiQuery({
+        name: 'slug',
+        type: 'string',
+    })
+    @ApiOkResponse({description: 'Get article'})
+    @ApiNotFoundResponse({description: errorParamsOrExistArticleMessage})
     @UsePipes(ExistArticlePipe)
     async getArticle(@Param() article: Article) {
         const limit = defaultLimitArticleAndComments;
@@ -89,13 +123,29 @@ export class ArticlesController {
     }
 
     @Put(':slug')
-    @UseGuards(RefreshGuard)
-    async updateArticle(@Body(DescriptionPipe, ArticleValidationPipe) article: Article) {
+    @ApiBearerAuth('auth')
+    @ApiHeader({name: 'Authorization', description: 'Auth token', allowEmptyValue: true, required: true})
+    @ApiUnauthorizedResponse({description: 'Unauthorized'})
+    @ApiBadRequestResponse({
+        description: 'Errors in structure article or in during save article',
+    })
+    @ApiOkResponse({description: 'Update article'})
+    @UseGuards(AuthGuard('jwt'))
+    async updateArticle(@Body(DescriptionPipe, ArticleValidationPipe) article: ArticleDoc) {
         return await this.articlesServices.updateArticle(article);
     }
 
     @Delete(':slug')
-    @UseGuards(RefreshGuard)
+    @ApiQuery({
+        name: 'slug',
+        type: 'string',
+    })
+    @ApiBearerAuth('auth')
+    @ApiUnauthorizedResponse({description: 'Unauthorized'})
+    @ApiHeader({name: 'Authorization', description: 'Auth token', allowEmptyValue: true, required: true})
+    @ApiNotFoundResponse({description: errorParamsOrExistArticleMessage})
+    @ApiOkResponse({description: 'Deleted article'})
+    @UseGuards(AuthGuard('jwt'))
     async deleteArticle(@Param(ExistArticlePipe) article: ArticleEntity) {
         await this.articlesServices.articleRepository.remove(article);
         return {
@@ -104,6 +154,25 @@ export class ArticlesController {
     }
 
     @Get(':slug/comments/:page')
+    @ApiQuery({
+        name: 'offset',
+        type: 'number',
+        required: false,
+    })
+    @ApiQuery({
+        name: 'page',
+        type: 'number',
+        required: false,
+    })
+    @ApiQuery({
+        name: 'slug',
+        type: 'string',
+    })
+    @ApiBadRequestResponse({
+        description: 'Incorrect params offset or page. Offset and page must be more 0.',
+    })
+    @ApiNotFoundResponse({description: errorParamsOrExistArticleMessage})
+    @ApiOkResponse({description: 'Get comments from article'})
     async getComments(@Param(CommentsValidationPipe, ExistArticlePipe) params: { article: Article, page: number },
                       @Query('offset') offset: number | undefined,
     ) {
@@ -130,7 +199,20 @@ export class ArticlesController {
     }
 
     @Delete(':slug/comments/:id')
-    @UseGuards(RefreshGuard)
+    @ApiQuery({
+        name: 'id',
+        type: 'number',
+    })
+    @ApiQuery({
+        name: 'slug',
+        type: 'string',
+    })
+    @ApiBearerAuth('auth')
+    @ApiUnauthorizedResponse({description: 'Unauthorized'})
+    @ApiHeader({name: 'Authorization', description: 'Auth token', allowEmptyValue: true, required: true})
+    @ApiNotFoundResponse({description: 'Comment not found'})
+    @ApiOkResponse({description: 'Comments deleted'})
+    @UseGuards(AuthGuard('jwt'))
     @UsePipes(CheckCommentPipe)
     async deleteComment(@Param() comment: CommentEntity) {
         await this.articlesServices.commentsRepository.delete(comment.id);
@@ -141,7 +223,7 @@ export class ArticlesController {
 
     @Post(':slug/comments')
     @UseFilters(HttpExceptionFilter)
-    async saveComment(@Param('slug') slug: string, @Body(TrimCommentPipe) data: CommentDto) {
+    async saveComment(@Param('slug') slug: string, @Body(TrimCommentPipe) data: Comment) {
         const {articleId, comment} = data;
         return await this.articlesServices.saveComment({articleId, comment});
     }

@@ -1,8 +1,8 @@
 import {ArgumentMetadata, BadRequestException, HttpStatus, Inject, Injectable, NotFoundException, PipeTransform} from '@nestjs/common';
 import {ArticlesServices} from '../articles.services';
-import {Article} from '../dto/article.dto';
-import {errorParamsOrExistArticle, errorParamsOrExistArticleMessage} from '../../ErrorCodes';
+import {errorParamsOrExistArticleMessage} from '../../ErrorCodes';
 import {ArticleEntity} from '../entities/article.entity';
+import {Article} from '../dto/article.dto';
 
 @Injectable()
 export class ExistArticlePipe implements PipeTransform {

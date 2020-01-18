@@ -58,7 +58,7 @@ export class ArticlesServices {
         return await this.commentsRepository.save(newComment);
     }
 
-    async saveArticle(data: ArticleDto): Promise<Article | undefined> {
+    async saveArticle(data: Article): Promise<Article | undefined> {
         const time = moment(new Date()).format('YYYY-MM-DD HH:mm:ss');
         const {title, article, description, authorId} = data;
         const slug: string = slugify(title);

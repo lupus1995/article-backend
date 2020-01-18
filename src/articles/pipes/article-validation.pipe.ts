@@ -1,6 +1,5 @@
 import {ArgumentMetadata, HttpException, HttpStatus, Inject, Injectable, PipeTransform} from '@nestjs/common';
 import {Article, ArticleDto} from '../dto/article.dto';
-import articles from '../../../scripts/fakeData';
 import {validate, ValidationError} from 'class-validator';
 
 @Injectable()

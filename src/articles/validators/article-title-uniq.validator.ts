@@ -1,8 +1,7 @@
 import {ValidationArguments, ValidatorConstraint} from 'class-validator';
 import {app} from '../../main';
 import {ArticlesServices} from '../articles.services';
-import {Body} from '@nestjs/common';
-import {Article, ArticleDto} from '../dto/article.dto';
+import {ArticleDto} from '../dto/article.dto';
 import {ArticleEntity} from '../entities/article.entity';
 
 @ValidatorConstraint({name: 'customText', async: false})
@@ -27,8 +26,6 @@ export class ArticleTitleUniq {
         } else {
             request = await this.articleService.articleRepository.findAndCount({title});
         }
-
-        console.log(request);
         const [articles, countArticles] = request;
         return countArticles === 0;
     }
